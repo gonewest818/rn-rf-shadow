@@ -8,7 +8,8 @@
     "web": "expo start --web",
     "web-only": "expo start --web-only",
     "release": "shadow-cljs release app",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "e2e": "detox test --configuration ios.sim"
   },
   "dependencies": {
     "expo": "35.0.0",
@@ -19,7 +20,22 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.1.0",
+    "bunyan": "^1.8.12",
+    "detox": "^14.8.5",
+    "detox-expo-helpers": "^0.6.0",
+    "expo-detox-hook": "^1.0.10",
+    "jest": "^24.9.0",
     "shadow-cljs": "^2.8.78"
+  },
+  "detox": {
+    "configurations": {
+      "ios.sim": {
+        "binaryPath": "bin/Exponent.app",
+        "type": "ios.simulator",
+        "name": "iPhone X"
+      }
+    },
+    "test-runner": "jest"
   },
   "private": true
 }
