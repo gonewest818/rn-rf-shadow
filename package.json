@@ -18,8 +18,12 @@
     "react-native-web": "^0.11.7"
   },
   "devDependencies": {
+    "appium": "^1.15.1",
+    "appium-doctor": "^1.12.1",
     "babel-preset-expo": "^7.1.0",
-    "shadow-cljs": "^2.8.78"
+    "opencv4nodejs": "^5.5.0",
+    "shadow-cljs": "^2.8.78",
+    "wd": "^1.11.4"
   },
   "private": true
 }

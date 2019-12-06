@@ -25,6 +25,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.gonewest818.test432709570192",
       "supportsTablet": true
     }
   }
