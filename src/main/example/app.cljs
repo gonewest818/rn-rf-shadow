@@ -54,7 +54,9 @@
                                :generateTestHook)]
     (fn []
       [:> rn/View {:style (.-container styles)}
-       [:> rn/Text {:style (.-title styles)} "Clicked: " @counter]
+       [:> rn/Text {:style (.-title styles)
+                    :ref (generate-test-hook "ClickCount")}
+        "Clicked: " @counter]
        [:> rn/TouchableOpacity {:style    (.-button styles)
                                 :on-press #(rf/dispatch [:inc-counter])}
         [:> rn/Text {:style (.-buttonText styles)} "Click me, I'll count"]]
@@ -72,7 +74,10 @@
              (fn []
                (.it spec "has a component"
                     (fn []
-                      (.exists spec "LogoImage"))))))
+                      (.exists spec "LogoImage")))
+               (.it spec "has another component"
+                    (fn []
+                      (.exists spec "ClickCount"))))))
 
 (defn root []
   (fn []
