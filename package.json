@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.1.0",
+    "cavy": "^3.1.0",
     "shadow-cljs": "^2.8.78"
   },
   "private": true

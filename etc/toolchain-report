@@ -60,12 +60,16 @@
 
 ;; react native toolchain
    {:key :expo-cli :cmd ["expo-cli" "-V"]}
+   {:key :cavy-cli :cmd ["cavy" "-V"]}
 
 ;; javascript tools
    {:key :node :cmd ["node" "-v"]}
    {:key :yarn :cmd ["yarn" "-v"]}
 
 ;; libraries / packages
+   {:key :cavy
+    :cmd ["yarn" "list"]
+    :pattern #"\s+cavy@(.*)\n"}
    {:key :expo-js
     :cmd ["yarn" "list"]
     :pattern #"\s+expo@(.*)\n"}
