@@ -1,6 +1,6 @@
 (ns example.app
   (:require
-   ["cavy" :as cavy :refer (Tester TestHookStore useCavy)]
+   ["cavy" :as cavy :refer (Tester TestHookStore hook)]
    ["expo" :as ex]
    ["react-native" :as rn]
    ["react" :as react]
@@ -47,20 +47,30 @@
           (clj->js)
           (rn/StyleSheet.create)))
 
-(defn root []
-  (let [counter (rf/subscribe [:get-counter])]
+(defn guts []
+  (let [counter (rf/subscribe [:get-counter])
+        generate-test-hook (-> (r/current-component)
+                               (r/props)
+                               :generateTestHook)]
+    ;;(let [generateTestHook (useCavy)])
     (fn []
-      ;;(let [generateTestHook (useCavy)])
-      [:> Tester {:specs [] :store test-hook-store}
-       [:> rn/View {:style (.-container styles)}
-        [:> rn/Text {:style (.-title styles)} "Clicked: " @counter]
-        [:> rn/TouchableOpacity {:style    (.-button styles)
-                                 :on-press #(rf/dispatch [:inc-counter])}
-         [:> rn/Text {:style (.-buttonText styles)} "Click me, I'll count"]]
-        [:> rn/Image {:source splash-img :style {:width 200 :height 200}
-                      ;;:ref (generateTestHook "LogoImage")
-                      }]
-        [:> rn/Text {:style (.-label styles)} "Using: shadow-cljs+expo+reagent+re-frame"]]])))
+      [:> rn/View {:style (.-container styles)}
+       [:> rn/Text {:style (.-title styles)} "Clicked: " @counter]
+       [:> rn/TouchableOpacity {:style    (.-button styles)
+                                :on-press #(rf/dispatch [:inc-counter])}
+        [:> rn/Text {:style (.-buttonText styles)} "Click me, I'll count"]]
+       [:> rn/Image {:source splash-img :style {:width 200 :height 200}
+                     :ref (generate-test-hook "LogoImage")}]
+       [:> rn/Text {:style (.-label styles)} "Using: shadow-cljs+expo+reagent+re-frame"]])))
+
+;; This is the pattern to wrap a reagent component
+;; so we can then instrument (via hook) with cavy...
+(def wrap-guts (-> guts r/reactify-component hook))
+
+(defn root []
+  (fn []
+    [:> Tester {:specs [] :store test-hook-store}
+     [:> wrap-guts]]))
 
 (defn start
   {:dev/after-load true}
@@ -70,4 +80,3 @@
 (defn init []
   (rf/dispatch-sync [:initialize-db])
   (start))
-
