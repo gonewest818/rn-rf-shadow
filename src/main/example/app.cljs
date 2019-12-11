@@ -52,7 +52,6 @@
         generate-test-hook (-> (r/current-component)
                                (r/props)
                                :generateTestHook)]
-    ;;(let [generateTestHook (useCavy)])
     (fn []
       [:> rn/View {:style (.-container styles)}
        [:> rn/Text {:style (.-title styles)} "Clicked: " @counter]
@@ -67,9 +66,17 @@
 ;; so we can then instrument (via hook) with cavy...
 (def wrap-guts (-> guts r/reactify-component hook))
 
+;; This is my guess at the cljs version of a cavy test spec
+(defn cavy-test-something [^TestScope spec]
+  (.describe spec "The guts"
+             (fn []
+               (.it spec "has a component"
+                    (fn []
+                      (.exists spec "LogoImage"))))))
+
 (defn root []
   (fn []
-    [:> Tester {:specs [] :store test-hook-store}
+    [:> Tester {:specs [cavy-test-something] :store test-hook-store}
      [:> wrap-guts]]))
 
 (defn start
