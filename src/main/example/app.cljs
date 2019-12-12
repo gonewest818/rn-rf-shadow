@@ -1,6 +1,6 @@
 (ns example.app
   (:require
-   ["cavy" :as cavy :refer (Tester TestHookStore hook)]
+   ["cavy" :as cavy :refer (Tester TestHookStore hook wrap)]
    ["expo" :as ex]
    ["react-native" :as rn]
    ["react" :as react]
@@ -55,8 +55,8 @@
                                :generateTestHook)]
     (fn []
       [:> rn/View {:style (.-container styles)}
-       [:> rn/Text {:style (.-title styles)
-                    :ref (generate-test-hook "ClickCount")}
+       [:> (wrap rn/Text) {:style (.-title styles)
+                      :ref (generate-test-hook "ClickCount")}
         "Clicked: " @counter]
        [:> rn/TouchableOpacity {:style    (.-button styles)
                                 :on-press #(rf/dispatch [:inc-counter])}
@@ -81,10 +81,10 @@
                       (p/do!
                        (.exists spec "ClickCount")
                        (-> (.findComponent spec "ClickCount")
-                           (p/then (fn [v] (js/console.log (type v)) v))
-                           (p/then (fn [v] (js/console.log (.isValidElement v)))))
-                       (.containsText spec "ClickCount" "Clicked")
-                         ))))))
+                           (p/then #(-> % .-props .-children js->clj))
+                           (p/then #(= "Clicked: " (first %)))
+                           (p/then prn)
+                           (p/then #(p/rejected (ex-info "failed test" {}))))))))))
 
 (defn root []
   (fn []
