@@ -4,6 +4,7 @@
    ["expo" :as ex]
    ["react-native" :as rn]
    ["react" :as react]
+   [promesa.core :as p]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [shadow.expo :as expo]
@@ -74,10 +75,16 @@
              (fn []
                (.it spec "has a component"
                     (fn []
-                      (.exists spec "LogoImage")))
+                      (p/do! (.exists spec "LogoImage"))))
                (.it spec "has another component"
                     (fn []
-                      (.exists spec "ClickCount"))))))
+                      (p/do!
+                       (.exists spec "ClickCount")
+                       (-> (.findComponent spec "ClickCount")
+                           (p/then (fn [v] (js/console.log (type v)) v))
+                           (p/then (fn [v] (js/console.log (.isValidElement v)))))
+                       (.containsText spec "ClickCount" "Clicked")
+                         ))))))
 
 (defn root []
   (fn []
