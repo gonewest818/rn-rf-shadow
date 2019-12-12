@@ -83,8 +83,9 @@
                        (-> (.findComponent spec "ClickCount")
                            (p/then #(-> % .-props .-children js->clj))
                            (p/then #(= "Clicked: " (first %)))
-                           (p/then prn)
-                           (p/then #(p/rejected (ex-info "failed test" {}))))))))))
+                           (p/then #(if %
+                                      (p/resolved "success")
+                                      (p/rejected (ex-info "failed test" {})))))))))))
 
 (defn root []
   (fn []
